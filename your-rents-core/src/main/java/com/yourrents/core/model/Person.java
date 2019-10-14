@@ -19,6 +19,8 @@ package com.yourrents.core.model;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +38,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "person")
+@JsonIdentityInfo(generator = JSOGGenerator.class)
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,0 +1,11 @@
+{
+  "com.yourrents.core.model.Person": [
+    {
+      "id": 1,
+      "fistName": "Enrico",
+      "lastName": "Giurin",
+      "email": "enricogiurin@gmail.com",
+      "gender": "MALE"
+    }
+  ]
+}
