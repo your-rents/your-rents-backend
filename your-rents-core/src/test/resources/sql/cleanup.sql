@@ -17,7 +17,6 @@
 -- limitations under the License.
 -- #L%
 ---
-SET REFERENTIAL_INTEGRITY TRUE;
-insert into person (id, first_name, last_name, gender, email, birth_date) values (1, 'Enrico', 'Giurin', 'MALE', 'enricogiurin@gmail.com', to_date('1984-01-01', 'YYYY-MM-DD'));
-insert into person (id, first_name, last_name, gender, email, birth_date) values (2, 'Monica', 'Rossi', 'FEMALE', 'monica.rossi@yahoo.com', to_date('1996-02-01', 'YYYY-MM-DD'));
+SET REFERENTIAL_INTEGRITY FALSE;
+truncate table person;
 commit;
