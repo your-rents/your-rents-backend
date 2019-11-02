@@ -43,27 +43,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "person")
-@JsonIdentityInfo(generator = JSOGGenerator.class)
-public class Person {
+@Table(name = "real_estate")
+public class RealEstate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, name = "first_name")
-    private String firstName;
-
-    @Column(nullable = false, name = "last_name")
-    private String lastName;
-
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(unique = true)
-    private String email;
 }

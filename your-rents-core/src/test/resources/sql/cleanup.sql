@@ -18,5 +18,5 @@
 -- #L%
 ---
 SET REFERENTIAL_INTEGRITY FALSE;
-truncate table person;
+truncate table real_estate;
 commit;

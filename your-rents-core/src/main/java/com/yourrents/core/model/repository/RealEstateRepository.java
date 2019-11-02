@@ -20,16 +20,14 @@ package com.yourrents.core.model.repository;
  * #L%
  */
 
-import com.yourrents.core.model.Gender;
-import com.yourrents.core.model.Person;
+import com.yourrents.core.model.RealEstate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface RealEstateRepository extends JpaRepository<RealEstate, Long> {
 
-    List<Person> findByGender(Gender gender);
 
 }
