@@ -1,8 +1,7 @@
-package com.yourrents.core.model.repository;
-
+package com.yourrents.core.model;
 /*-
  * #%L
- * Your Rents Core
+ * Your Rents Services
  * %%
  * Copyright (C) 2019 Your Rents Team
  * %%
@@ -20,14 +19,32 @@ package com.yourrents.core.model.repository;
  * #L%
  */
 
-import com.yourrents.core.model.RealEstate;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Repository
-public interface RealEstateRepository extends JpaRepository<RealEstate, Long> {
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "feature")
+public class Feature {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String yearOfConstruction;
 
 
 }

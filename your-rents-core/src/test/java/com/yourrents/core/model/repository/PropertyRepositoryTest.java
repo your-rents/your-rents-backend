@@ -19,19 +19,15 @@ package com.yourrents.core.model.repository;
  * #L%
  */
 
-import com.yourrents.core.model.RealEstate;
+import com.yourrents.core.model.Property;
 import com.yourrents.core.test.TestConfig;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,14 +37,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Porpoise of this test is just to validate the spring data test configuration.
  * It will be dismissed as soon as meaningful tests will be committed.
  */
-public class RealEstateRepositoryTest {
+public class PropertyRepositoryTest {
     @Resource
-    private RealEstateRepository realEstateRepository;
+    private PropertyRepository propertyRepository;
 
     @Sql({"/sql/cleanup.sql"})
     @Test
     public void sanity() {
-        final List<RealEstate> all = realEstateRepository.findAll();
+        final List<Property> all = propertyRepository.findAll();
         assertThat(all).isEmpty();
     }
 
