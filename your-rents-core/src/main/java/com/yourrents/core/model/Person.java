@@ -40,8 +40,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "property_owner")
-public class PropertyOwner {
+@Table(name = "person")
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

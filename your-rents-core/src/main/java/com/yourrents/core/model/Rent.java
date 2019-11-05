@@ -26,16 +26,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -43,32 +40,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "property")
-public class Property {
+@Table(name = "rent")
+public class Rent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
-    private Address address;
-
-    @OneToOne
-    private Feature feature;
+    private LocalDate starDate;
+    private LocalDate endDate;
 
     @ManyToOne
-    private Person owner;
+    private Property property;
 
     @ManyToOne
     private Person tenant;
-
-    @OneToMany
-    private List<Rent> rents;
-
-    @Enumerated(EnumType.STRING)
-    private PropertyType type;
-
-    @Enumerated(EnumType.STRING)
-    private PropertyStatus status;
 
 }
