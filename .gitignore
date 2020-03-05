@@ -21,6 +21,10 @@ buildNumber.properties
 
 # Ignore memory dumps
 .attach_pid*
+core.*
+javacore.*
+jitdump.*
+Snap.*
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
