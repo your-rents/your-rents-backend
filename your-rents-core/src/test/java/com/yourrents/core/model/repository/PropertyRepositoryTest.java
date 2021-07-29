@@ -21,17 +21,17 @@ package com.yourrents.core.model.repository;
 
 import com.yourrents.core.model.Property;
 import com.yourrents.core.test.TestConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.annotation.Resource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
 /**
  * Porpoise of this test is just to validate the spring data test configuration.

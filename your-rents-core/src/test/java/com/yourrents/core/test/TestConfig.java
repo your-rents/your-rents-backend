@@ -19,7 +19,11 @@ package com.yourrents.core.test;
  * #L%
  */
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -35,15 +39,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.Properties;
-
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.yourrents.core.model")
 @EnableJpaRepositories(basePackages = "com.yourrents.core")
 @Configuration
-@Slf4j
 public class TestConfig {
     private static final String TEST_YAML_CONFIGURATION = "application.yaml";
 
