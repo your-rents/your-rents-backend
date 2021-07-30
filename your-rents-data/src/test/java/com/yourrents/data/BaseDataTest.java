@@ -19,27 +19,52 @@ package com.yourrents.data;
  * limitations under the License.
  * #L%
  */
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
-
 import com.yourrents.data.util.TestUtils;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class BaseDataTest {
 
+    private static HikariDataSource sharedTcDs;
+
+    @BeforeAll
+    public static void initTestClass() {
+        sharedTcDs = TestUtils.getTestContainersDataSource();
+    }
+
+    @AfterAll
+    public static void cleanTestClass() {
+        sharedTcDs.close();
+    }
+
     @Test
-    public void testSimple() throws SQLException {
+    public void testCurrentDatabaseVersion() throws SQLException {
+        try (Connection conn = sharedTcDs.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(
+                        "select version, success from flyway_schema_history order by installed_rank desc");
+                ResultSet rs = stmt.executeQuery();) {
+            if (rs.next()) {
+                assertEquals(1, rs.getInt("version"));
+                assertTrue(rs.getBoolean("success"));
+            }
+        }
+    }
+
+    @Test
+    public void isolatedSimpleTest() throws SQLException {
         try (HikariDataSource ds = TestUtils.getTestContainersDataSource()) {
-            try (Connection conn = ((DataSource)ds).getConnection();
+            try (Connection conn = ds.getConnection();
                     PreparedStatement stmt = conn.prepareStatement("select 1");
                     ResultSet rs = stmt.executeQuery();) {
                 if (rs.next()) {

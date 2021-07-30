@@ -18,6 +18,21 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
 
+  <profiles>
+    <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <id>dev</id>
+      <properties>
+        <db.url>jdbc:postgresql://localhost:25432</db.url>
+        <db.name>your_rents</db.name>
+        <db.username>your_rents</db.username>
+        <db.password>your_rents</db.password>
+      </properties>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -63,6 +78,39 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
       <scope>test</scope>
-  </dependency>            
-</dependencies>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+<!--        
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>migrate</goal>
+            </goals>
+          </execution>
+        </executions>
+-->        
+        <configuration>
+          <!--<skip>true</skip>-->
+          <validateOnMigrate>false</validateOnMigrate>
+          <url>${db.url}/${db.name}</url>
+          <user>${db.username}</user>
+          <password>${db.password}</password>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${jdbc.postgresql.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 </project>
