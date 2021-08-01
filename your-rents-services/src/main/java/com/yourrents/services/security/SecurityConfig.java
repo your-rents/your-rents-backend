@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/actuator/**"
     };
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin();
@@ -71,7 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("lucio").password(passwordEncoder().encode("lucio"))
                 .authorities("ROLE_USER");
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
