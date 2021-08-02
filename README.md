@@ -7,9 +7,15 @@ The Java back-end services for the Your Rent system.
 - maven 3.6.1 or higher
 
 ## To build
+
 `$ mvn clean install`
 
 ## To start the app
+
 `$ cd your-rents-services`
 
 `$ mvn spring-boot:run`
+
+## Swagger
+
+http://localhost:8080/swagger-ui/
