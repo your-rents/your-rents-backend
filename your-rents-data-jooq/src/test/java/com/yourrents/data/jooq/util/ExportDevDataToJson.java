@@ -1,8 +1,8 @@
-package com.yourrents.data.util;
+package com.yourrents.data.jooq.util;
 
 /*-
  * #%L
- * Your Rents Data
+ * Your Rents Data JOOQ
  * %%
  * Copyright (C) 2019 - 2021 Your Rents Team
  * %%
@@ -20,36 +20,42 @@ package com.yourrents.data.util;
  * #L%
  */
 
+import static com.yourrents.data.jooq.Tables.*;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import org.flywaydb.core.Flyway;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface TestUtils {
-    static final Logger log = LoggerFactory.getLogger(TestUtils.class);
+public class ExportDevDataToJson {
+    static final Logger log = LoggerFactory.getLogger(ExportDevDataToJson.class);
 
-    static final String TEST_JDBC_URL = "jdbc:tc:postgresql:13-alpine://localhost:5432/yr?TC_TMPFS=/testtmpfs:rw&TC_INITFUNCTION=com.yourrents.data.util.TestUtils::initDatabase";
-    static final String TEST_JDBC_USERNAME = "test";
-    static final String TEST_JDBC_PASSWORD = "test";
+    static final String DEV_JDBC_URL = "jdbc:postgresql://localhost:25432/your_rents";
+    static final String DEV_JDBC_USERNAME = "your_rents";
+    static final String DEV_JDBC_PASSWORD = "your_rents";
 
     static HikariDataSource getTestContainersDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(TEST_JDBC_URL);
-        hikariConfig.setUsername(TEST_JDBC_USERNAME);
-        hikariConfig.setPassword(TEST_JDBC_PASSWORD);
+        hikariConfig.setJdbcUrl(DEV_JDBC_URL);
+        hikariConfig.setUsername(DEV_JDBC_USERNAME);
+        hikariConfig.setPassword(DEV_JDBC_PASSWORD);
         return new HikariDataSource(hikariConfig);
     }
 
-    static void initDatabase(Connection conn) throws SQLException {
-        log.info("Initializing Your Rents test database ({})", conn.getMetaData().getURL());
-        Flyway flyway = Flyway.configure()
-                .dataSource(conn.getMetaData().getURL(), TEST_JDBC_USERNAME, TEST_JDBC_PASSWORD).load();
-        flyway.migrate();
+    public static void main(String[] args) throws SQLException {
+        try (HikariDataSource ds = getTestContainersDataSource();
+            Connection conn = ds.getConnection();
+        ) {
+            DSLContext dsl = DSL.using(conn);
+            String json = dsl.select().from(PROPERTY).fetch().formatJSON();
+            System.out.println(json);
+        }
     }
 
 }

@@ -1,0 +1,50 @@
+{
+  "fields": [
+    {
+      "schema": "public",
+      "table": "property",
+      "name": "id",
+      "type": "INTEGER"
+    },
+    {
+      "schema": "public",
+      "table": "property",
+      "name": "name",
+      "type": "VARCHAR"
+    },
+    {
+      "schema": "public",
+      "table": "property",
+      "name": "description",
+      "type": "CLOB"
+    },
+    {
+      "schema": "public",
+      "table": "property",
+      "name": "land_register_reference",
+      "type": "VARCHAR"
+    },
+    {
+      "schema": "public",
+      "table": "property",
+      "name": "external_id",
+      "type": "UUID"
+    }
+  ],
+  "records": [
+    [
+      1,
+      "First property",
+      "The first property added to the database",
+      "12, 344, 456",
+      "a444c18e-01ad-4aef-9365-6f42752faa62"
+    ],
+    [
+      2,
+      "Another property",
+      "Another property added to the database",
+      "34, 123, 543",
+      "845ca35a-783f-4b84-9fab-7dd0cadcd3e5"
+    ]
+  ]
+}
