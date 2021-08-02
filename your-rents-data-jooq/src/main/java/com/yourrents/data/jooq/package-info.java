@@ -1,8 +1,8 @@
-package com.yourrents.data;
+package com.yourrents.data.jooq;
 
 /*-
  * #%L
- * Your Rents Data
+ * Your Rents Data JOOQ
  * %%
  * Copyright (C) 2019 - 2021 Your Rents Team
  * %%
@@ -19,15 +19,3 @@ package com.yourrents.data;
  * limitations under the License.
  * #L%
  */
-
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
-}

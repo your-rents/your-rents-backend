@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public interface TestUtils {
     static final Logger log = LoggerFactory.getLogger(TestUtils.class);
 
-    static final String TEST_JDBC_URL = "jdbc:tc:postgresql:13://localhost:5432/yr?TC_INITFUNCTION=com.yourrents.data.util.TestUtils::initDatabase";
+    static final String TEST_JDBC_URL = "jdbc:tc:postgresql:13-alpine://localhost:5432/yr?TC_INITFUNCTION=com.yourrents.data.util.TestUtils::initDatabase";
     static final String TEST_JDBC_USERNAME = "test";
     static final String TEST_JDBC_PASSWORD = "test";
 
