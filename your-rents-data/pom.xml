@@ -35,6 +35,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-meta</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq-codegen</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <scope>provided</scope>
@@ -85,7 +97,6 @@
       <plugin>
         <groupId>org.flywaydb</groupId>
         <artifactId>flyway-maven-plugin</artifactId>
-<!--        
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -94,7 +105,6 @@
             </goals>
           </execution>
         </executions>
--->        
         <configuration>
           <!--<skip>true</skip>-->
           <validateOnMigrate>false</validateOnMigrate>
@@ -110,6 +120,50 @@
             <scope>runtime</scope>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${jdbc.postgresql.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <jdbc>
+            <url>${db.url}/${db.name}</url>
+            <user>${db.username}</user>
+            <password>${db.password}</password>
+          </jdbc>
+          <generator>
+            <database>
+              <!-- <unsignedTypes>false</unsignedTypes> -->
+              <catalogVersionProvider>SELECT :catalog_name || '_' || MAX("version") FROM "flyway_schema_history"</catalogVersionProvider>
+              <schemaVersionProvider>SELECT :schema_name || '_' || MAX("version") FROM "flyway_schema_history"</schemaVersionProvider>
+              <schemata>
+                <schema>
+                  <inputSchema>public</inputSchema>
+                </schema>
+              </schemata>
+              <includes>.*</includes>
+              <excludes />
+            </database>
+            <target>
+              <packageName>com.yourrents.data.jooq</packageName>
+              <directory>target/generated-sources/jooq</directory>
+            </target>
+          </generator>
+        </configuration>
       </plugin>
     </plugins>
   </build>

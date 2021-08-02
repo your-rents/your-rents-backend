@@ -20,6 +20,7 @@
         <spring.boot.version>2.5.3</spring.boot.version>
         <testcontainers.version>1.16.0</testcontainers.version>
         <flyway.version>7.11.4</flyway.version>
+        <jooq.version>3.15.1</jooq.version>
         <jdbc.postgresql.version>42.2.23</jdbc.postgresql.version>
     </properties>
 
@@ -119,6 +120,21 @@
                 <version>${flyway.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-meta</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>            
         </dependencies>
     </dependencyManagement>
 
@@ -147,6 +163,11 @@
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>${flyway.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
