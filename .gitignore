@@ -27,5 +27,5 @@ javacore.*
 jitdump.*
 Snap.*
 
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
+# Explicity ignore Maven Wrapper binaries (no downloadable binaries, please)
+maven-wrapper.jar
