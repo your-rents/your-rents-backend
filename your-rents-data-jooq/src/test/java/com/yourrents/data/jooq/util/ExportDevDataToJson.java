@@ -20,18 +20,17 @@ package com.yourrents.data.jooq.util;
  * #L%
  */
 
-import static com.yourrents.data.jooq.Tables.*;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import static com.yourrents.data.jooq.Tables.PROPERTY;
 
 public class ExportDevDataToJson {
     static final Logger log = LoggerFactory.getLogger(ExportDevDataToJson.class);
