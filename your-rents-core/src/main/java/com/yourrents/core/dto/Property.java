@@ -1,4 +1,4 @@
-package com.yourrents.services.dto;
+package com.yourrents.core.dto;
 
 /*-
  * #%L
@@ -27,7 +27,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class PropertyDTO {
+public class Property {
     private String name;
     private String description;
 }

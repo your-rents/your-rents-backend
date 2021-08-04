@@ -1,4 +1,4 @@
-package com.yourrents.services.service;
+package com.yourrents.core.service;
 
 /*-
  * #%L
@@ -20,7 +20,8 @@ package com.yourrents.services.service;
  * #L%
  */
 
-import com.yourrents.services.dto.PropertyDTO;
+
+import com.yourrents.core.dto.Property;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ import java.util.Collections;
 @Service
 public class PropertyService {
 
-    public Page<PropertyDTO> list(Pageable pageable) {
+    public Page<Property> list(Pageable pageable) {
         //TODO - to be integrated with the db
         return new PageImpl<>(Collections.emptyList());
     }

@@ -20,8 +20,8 @@ package com.yourrents.services.controller;
  * #L%
  */
 
-import com.yourrents.services.dto.PropertyDTO;
-import com.yourrents.services.service.PropertyService;
+import com.yourrents.core.dto.Property;
+import com.yourrents.core.service.PropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -83,12 +83,12 @@ class PropertyControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    private List<PropertyDTO> buildList() {
-        return List.of(PropertyDTO.builder()
+    private List<Property> buildList() {
+        return List.of(Property.builder()
                         .name("flat-A")
                         .description("flat at Jesolo")
                         .build(),
-                PropertyDTO.builder()
+                Property.builder()
                         .name("flat-B")
                         .description("flat at Livorno")
                         .build());

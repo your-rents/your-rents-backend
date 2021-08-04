@@ -23,7 +23,7 @@ package com.yourrents.services;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.yourrents"})
 public class YourrentsServicesApplication {
 
 	public static void main(String[] args) {

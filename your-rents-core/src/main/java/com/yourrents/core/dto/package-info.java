@@ -1,4 +1,4 @@
-package com.yourrents.services.dto;
+package com.yourrents.core.dto;
 /*-
  * #%L
  * Your Rents Services

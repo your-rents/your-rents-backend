@@ -20,8 +20,8 @@ package com.yourrents.services.controller;
  * #L%
  */
 
-import com.yourrents.services.dto.PropertyDTO;
-import com.yourrents.services.service.PropertyService;
+import com.yourrents.core.dto.Property;
+import com.yourrents.core.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +39,7 @@ public class PropertyController {
     @RequestMapping(
             method = {RequestMethod.GET}
     )
-    public ResponseEntity<Page<PropertyDTO>> list(Pageable pageable) {
+    public ResponseEntity<Page<Property>> list(Pageable pageable) {
         return ResponseEntity.ok(propertyService.list(pageable));
     }
 

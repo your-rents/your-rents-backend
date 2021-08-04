@@ -1,4 +1,4 @@
-package com.yourrents.services.service;
+package com.yourrents.core.service;
 /*-
  * #%L
  * Your Rents Services
