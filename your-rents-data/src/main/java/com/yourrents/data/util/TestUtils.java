@@ -20,15 +20,14 @@ package com.yourrents.data.util;
  * #L%
  */
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface TestUtils {
     static final Logger log = LoggerFactory.getLogger(TestUtils.class);

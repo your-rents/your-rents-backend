@@ -20,18 +20,8 @@ package com.yourrents.data.jooq;
  * #L%
  */
 
-import com.zaxxer.hikari.HikariDataSource;
-
-import static com.yourrents.data.jooq.Tables.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
-
 import com.yourrents.data.util.TestUtils;
-
+import com.zaxxer.hikari.HikariDataSource;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -39,6 +29,14 @@ import org.jooq.impl.DSL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
+
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertyTest {
     private static HikariDataSource sharedTcDs;
