@@ -51,6 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {PropertyController.class})
 class PropertyControllerTest {
 
+    public static final String URL = "/v1/property";
+
     @Resource
     private MockMvc mockMvc;
 
@@ -66,7 +68,7 @@ class PropertyControllerTest {
     @Test
     @WithMockUser(authorities = "ROLE_USER")
     void list() throws Exception {
-        mockMvc.perform(get("/property"))
+        mockMvc.perform(get(URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.content", hasSize(2)))
@@ -79,7 +81,7 @@ class PropertyControllerTest {
 
     @Test
     void listNotAuthorized() throws Exception {
-        mockMvc.perform(get("/property"))
+        mockMvc.perform(get(URL))
                 .andExpect(status().isUnauthorized());
     }
 
