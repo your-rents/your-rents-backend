@@ -1,0 +1,7 @@
+## Spring Configuration
+spring:
+  datasource:
+    url: 'jdbc:tc:postgresql:13-alpine://localhost:5432/yr?TC_TMPFS=/testtmpfs:rw&TC_INITFUNCTION=com.yourrents.data.util.TestUtils::initDatabase'
+    username: 'test'
+    password: 'test'
+    driver-class-name: 'org.testcontainers.jdbc.ContainerDatabaseDriver'
