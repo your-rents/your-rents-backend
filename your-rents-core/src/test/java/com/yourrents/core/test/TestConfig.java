@@ -19,84 +19,81 @@ package com.yourrents.core.test;
  * #L%
  */
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import javax.sql.DataSource;
+
+import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
+import com.yourrents.data.util.TestUtils;
+
+import org.jooq.SQLDialect;
+import org.jooq.impl.DataSourceConnectionProvider;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.Properties;
-
+/**
+ * Test configuration for using JOOQ in Spring.
+ * 
+ * @see <a href=
+ *      "https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/">https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/</a>
+ * @see <a href=
+ *      "https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/">https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/</a>
+ */
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.yourrents.core.model")
-@EnableJpaRepositories(basePackages = "com.yourrents.core")
+@ComponentScan(basePackages = "com.yourrents.core.service")
 @Configuration
 public class TestConfig {
-    private static final String TEST_YAML_CONFIGURATION = "application.yaml";
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource);
-        em.setPackagesToScan(new String[]{"com.yourrents.core.model"});
-        final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(additionalProperties());
-        return em;
+    @Bean(destroyMethod = "close")
+    public DataSource dataSource() {
+        return TestUtils.getTestContainersDataSource();
     }
 
     @Bean
-    public DataSource dataSource(@Value("${spring.datasource.driver-class-name}") String driver,
-                                 @Value("${spring.datasource.url}") String url,
-                                 @Value("${spring.datasource.username}") String username,
-                                 @Value("${spring.datasource.password}") String password) {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        return dataSource;
+    public LazyConnectionDataSourceProxy lazyConnectionDataSource() {
+        return new LazyConnectionDataSourceProxy(dataSource());
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
-        final JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-        return transactionManager;
+    public TransactionAwareDataSourceProxy transactionAwareDataSource() {
+        return new TransactionAwareDataSourceProxy(lazyConnectionDataSource());
     }
 
-    final Properties additionalProperties() {
-        final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
-        //hibernateProperties.setProperty("hibernate.show_sql", "true");
-        return hibernateProperties;
-    }
-
-    //to be able to use yaml instead of properties in the test related to the core module
-
-    /**
-     * Load configuration from yaml instead of properties.
-     * Based on this example: https://stackoverflow.com/a/28829727/379173
-     */
     @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new ClassPathResource(TEST_YAML_CONFIGURATION));
-        propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
-        return propertySourcesPlaceholderConfigurer;
+    public DataSourceTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(lazyConnectionDataSource());
     }
+
+    @Bean
+    public DataSourceConnectionProvider connectionProvider() {
+        return new DataSourceConnectionProvider(transactionAwareDataSource());
+    }
+
+    @Bean
+    public JOOQToSpringExceptionTransformer jooqToSpringExceptionTransformer() {
+        return new JOOQToSpringExceptionTransformer();
+    }
+
+    @Bean
+    public DefaultConfiguration configuration() {
+        DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
+
+        jooqConfiguration.set(connectionProvider());
+        jooqConfiguration.set(new DefaultExecuteListenerProvider(jooqToSpringExceptionTransformer()));
+        jooqConfiguration.set(SQLDialect.POSTGRES);
+
+        return jooqConfiguration;
+    }
+
+    @Bean
+    public DefaultDSLContext dsl() {
+        return new DefaultDSLContext(configuration());
+    }
+
 }

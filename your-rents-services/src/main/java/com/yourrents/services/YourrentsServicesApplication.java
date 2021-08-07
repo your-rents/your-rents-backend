@@ -22,8 +22,10 @@ package com.yourrents.services;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 
-@SpringBootApplication(scanBasePackages = {"com.yourrents"})
+@SpringBootApplication(scanBasePackages = { "com.yourrents.services", "com.yourrents.core.service" },
+ 					   exclude = {R2dbcAutoConfiguration.class })
 public class YourrentsServicesApplication {
 
 	public static void main(String[] args) {

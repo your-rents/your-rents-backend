@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("property")
+@RequestMapping("/v1/property")
 @RequiredArgsConstructor
 public class PropertyController {
     private final PropertyService propertyService;
