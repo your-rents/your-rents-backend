@@ -54,10 +54,11 @@ class PropertyServiceTest {
     void add() {
         //given
         Result<Record> result = dsl.select().from(PROPERTY).fetch();
-        assertThat(result.isEmpty());
+        assertThat(result.isEmpty()).isTrue();
 
         //when
         propertyService.add(Property.builder()
+                .id(1)
                 .name("flat-A")
                 .description("short description")
                 .build());

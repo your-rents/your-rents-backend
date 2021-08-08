@@ -62,8 +62,8 @@ public class PropertyService {
     @Transactional
     public int add(Property property) {
         return dsl.insertInto(PROPERTY,
-                PROPERTY.NAME, PROPERTY.DESCRIPTION)
-                .values(property.getName(), property.getDescription())
+                PROPERTY.ID, PROPERTY.NAME, PROPERTY.DESCRIPTION)
+                .values(property.getId(), property.getName(), property.getDescription())
                 .execute();
     }
 
@@ -92,7 +92,7 @@ public class PropertyService {
             Field tableField = PROPERTY.getClass().getField(sortFieldName);
             sortField = (TableField) tableField.get(PROPERTY);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            String errorMessage = String.format("Could not find table field: {}", sortFieldName);
+            String errorMessage = String.format("Could not find table field: %s", sortFieldName);
             throw new InvalidDataAccessApiUsageException(errorMessage, ex);
         }
         return sortField;
@@ -117,6 +117,10 @@ public class PropertyService {
     }
 
     private Property convertQueryResultToModelObject(PropertyRecord queryResult) {
-        return Property.builder().name(queryResult.getName()).description(queryResult.getDescription()).build();
+        return Property.builder()
+                .id(queryResult.getId())
+                .name(queryResult.getName())
+                .description(queryResult.getDescription())
+                .build();
     }
 }

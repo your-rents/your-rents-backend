@@ -80,8 +80,10 @@ class PropertyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value("1"))
                 .andExpect(jsonPath("$.content[0].name").value("flat-A"))
                 .andExpect(jsonPath("$.content[0].description").value("flat at Jesolo"))
+                .andExpect(jsonPath("$.content[1].id").value("2"))
                 .andExpect(jsonPath("$.content[1].name").value("flat-B"))
                 .andExpect(jsonPath("$.content[1].description").value("flat at Livorno"));
         verify(propertyService, times(1)).list(any(Pageable.class));
@@ -95,10 +97,12 @@ class PropertyControllerTest {
 
     private List<Property> buildList() {
         return List.of(Property.builder()
+                        .id(1)
                         .name("flat-A")
                         .description("flat at Jesolo")
                         .build(),
                 Property.builder()
+                        .id(2)
                         .name("flat-B")
                         .description("flat at Livorno")
                         .build());
