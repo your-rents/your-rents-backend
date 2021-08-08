@@ -20,15 +20,19 @@ package com.yourrents.services.controller;
  * #L%
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
+import com.yourrents.services.security.SecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,13 +46,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {PropertyController.class})
+@ContextConfiguration(classes = {PropertyController.class, SecurityConfig.class})
 class PropertyControllerTest {
 
     public static final String URL = "/v1/property";
@@ -58,6 +63,9 @@ class PropertyControllerTest {
 
     @MockBean
     private PropertyService propertyService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -94,5 +102,19 @@ class PropertyControllerTest {
                         .name("flat-B")
                         .description("flat at Livorno")
                         .build());
+    }
+
+    @Test
+    @WithMockUser(authorities = "ROLE_USER")
+    void add() throws Exception {
+        Property property = Property.builder()
+                .name("new-name")
+                .description("new-description")
+                .build();
+        this.mockMvc.perform(put(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(property)))
+                .andExpect(status().isCreated());
+        verify(propertyService, times(1)).add(property);
     }
 }

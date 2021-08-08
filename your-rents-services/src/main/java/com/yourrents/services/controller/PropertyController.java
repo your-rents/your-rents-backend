@@ -25,7 +25,9 @@ import com.yourrents.core.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,15 @@ public class PropertyController {
     )
     public ResponseEntity<Page<Property>> list(Pageable pageable) {
         return ResponseEntity.ok(propertyService.list(pageable));
+    }
+
+    @RequestMapping(
+            method = {RequestMethod.PUT},
+            produces = "application/json"
+    )
+    public ResponseEntity<Integer> add(@RequestBody Property property) {
+        int id = propertyService.add(property);
+        return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
 }

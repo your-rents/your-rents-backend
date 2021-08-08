@@ -20,15 +20,12 @@ package com.yourrents.core.service;
  * #L%
  */
 
-import static com.yourrents.data.jooq.Tables.PROPERTY;
-
 import com.yourrents.core.dto.Property;
 import com.yourrents.data.jooq.tables.records.PropertyRecord;
-
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SortField;
 import org.jooq.TableField;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,20 +40,31 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+
 @Service
+@RequiredArgsConstructor
 public class PropertyService {
-    @Autowired
-    private DSLContext dsl;
+
+    private final DSLContext dsl;
 
     @Transactional(readOnly = true)
     public Page<Property> list(Pageable pageable) {
         List<PropertyRecord> queryResults = dsl.selectFrom(PROPERTY)
-            .orderBy(getSortFields(pageable.getSort()))
-            .limit(pageable.getPageSize()).offset(pageable.getOffset())
-            .fetchInto(PropertyRecord.class);
+                .orderBy(getSortFields(pageable.getSort()))
+                .limit(pageable.getPageSize()).offset(pageable.getOffset())
+                .fetchInto(PropertyRecord.class);
         List<Property> propertyEntries = convertQueryResultsToModelObjects(queryResults);
         long totalCount = dsl.fetchCount(PROPERTY);
         return new PageImpl<>(propertyEntries, pageable, totalCount);
+    }
+
+    @Transactional
+    public int add(Property property) {
+        return dsl.insertInto(PROPERTY,
+                PROPERTY.NAME, PROPERTY.DESCRIPTION)
+                .values(property.getName(), property.getDescription())
+                .execute();
     }
 
     @SuppressWarnings("rawtypes")

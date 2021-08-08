@@ -20,13 +20,21 @@ package com.yourrents.core.dto;
  * #L%
  */
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Builder
 @Getter
 @ToString
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = {"name"})
 public class Property {
     private String name;
     private String description;

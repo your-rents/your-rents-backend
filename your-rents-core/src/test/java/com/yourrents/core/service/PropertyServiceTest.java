@@ -1,4 +1,4 @@
-package com.yourrents.core;
+package com.yourrents.core.service;
 
 /*-
  * #%L
@@ -9,9 +9,9 @@ package com.yourrents.core;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,6 @@ package com.yourrents.core;
  */
 
 import com.yourrents.core.dto.Property;
-import com.yourrents.core.service.PropertyService;
 import com.yourrents.core.test.TestConfig;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -30,26 +29,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 
 import static com.yourrents.data.jooq.Tables.PROPERTY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Some simple tests for checking the module environment. Other tests should mock jooq dependencies.
- */
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class EnvironmentTest {
+class PropertyServiceTest {
 
     @Autowired
     private DSLContext dsl;
@@ -57,28 +49,27 @@ public class EnvironmentTest {
     @Autowired
     private PropertyService propertyService;
 
+
+    @Test
+    void add() {
+        //given
+        Result<Record> result = dsl.select().from(PROPERTY).fetch();
+        assertThat(result.isEmpty());
+
+        //when
+        propertyService.add(Property.builder()
+                .name("flat-A")
+                .description("short description")
+                .build());
+
+        //then
+        result = dsl.select().from(PROPERTY).fetch();
+        assertThat(result).hasSize(1);
+
+    }
+
     @BeforeEach
     public void initTestClass() throws SQLException, IOException {
         dsl.deleteFrom(PROPERTY).execute();
-        InputStream is = EnvironmentTest.class.getClassLoader().getResourceAsStream("com/yourrents/core/testdata/property.json");
-        dsl.loadInto(PROPERTY).loadJSON(is, Charset.forName("UTF-8")).fieldsCorresponding().execute();        
     }
-
-    @Test
-    public void testTestEnvironment() {
-        assertTrue(true);
-    }
-
-    @Test
-    public void testFindAllProperties() throws SQLException {
-        Result<Record> result = dsl.select().from(PROPERTY).fetch();
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void testFindAllPropertiesWithService() throws SQLException {
-        Page<Property> result = propertyService.list(Pageable.ofSize(100));
-        assertEquals(2, result.getNumberOfElements());
-    }
-    
 }
