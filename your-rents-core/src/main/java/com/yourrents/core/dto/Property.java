@@ -36,7 +36,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class Property {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
 }

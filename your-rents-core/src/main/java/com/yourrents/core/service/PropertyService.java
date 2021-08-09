@@ -61,9 +61,10 @@ public class PropertyService {
 
     @Transactional
     public int add(Property property) {
+        //the id of the property is ignored as we are going to create a new record in the db
         return dsl.insertInto(PROPERTY,
-                PROPERTY.ID, PROPERTY.NAME, PROPERTY.DESCRIPTION)
-                .values(property.getId(), property.getName(), property.getDescription())
+                PROPERTY.NAME, PROPERTY.DESCRIPTION)
+                .values(property.getName(), property.getDescription())
                 .execute();
     }
 
