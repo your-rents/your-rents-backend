@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import com.yourrents.services.security.SecurityConfig;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,6 +45,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,15 +67,15 @@ class PropertyControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        when(propertyService.list(any(Pageable.class)))
-                .thenReturn(new PageImpl<>(buildList()));
-    }
 
     @Test
     @WithMockUser(authorities = "ROLE_USER")
     void list() throws Exception {
+        //given
+        when(propertyService.list(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(buildList()));
+
+        //when-then
         mockMvc.perform(get(URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -95,6 +95,58 @@ class PropertyControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    @WithMockUser(authorities = "ROLE_USER")
+    void add() throws Exception {
+        //given
+        Property property = Property.builder()
+                .name("new-name")
+                .description("new-description")
+                .build();
+
+        //when-then
+        this.mockMvc.perform(put(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(property)))
+                .andExpect(status().isCreated());
+        verify(propertyService, times(1)).add(property);
+    }
+
+    @Test
+    @WithMockUser(authorities = "ROLE_USER")
+    void update() throws Exception {
+        //given
+        Property property = Property.builder()
+                .id(1)
+                .build();
+        when(propertyService.update(property)).thenReturn(1);
+
+        //when-then
+        this.mockMvc.perform(post(URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(property)))
+                .andExpect(status().isOk());
+        verify(propertyService, times(1)).update(property);
+    }
+
+    @Test
+    @WithMockUser(authorities = "ROLE_USER")
+    void updateNotFound() throws Exception {
+        //given
+        Property property = Property.builder()
+                .id(1)
+                .build();
+        when(propertyService.update(property)).thenReturn(0);
+
+        //when-then
+        this.mockMvc.perform(post(URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(property)))
+                .andExpect(status().isNotFound());
+        verify(propertyService, times(1)).update(property);
+    }
+
+
     private List<Property> buildList() {
         return List.of(Property.builder()
                         .id(1)
@@ -106,19 +158,5 @@ class PropertyControllerTest {
                         .name("flat-B")
                         .description("flat at Livorno")
                         .build());
-    }
-
-    @Test
-    @WithMockUser(authorities = "ROLE_USER")
-    void add() throws Exception {
-        Property property = Property.builder()
-                .name("new-name")
-                .description("new-description")
-                .build();
-        this.mockMvc.perform(put(URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(property)))
-                .andExpect(status().isCreated());
-        verify(propertyService, times(1)).add(property);
     }
 }

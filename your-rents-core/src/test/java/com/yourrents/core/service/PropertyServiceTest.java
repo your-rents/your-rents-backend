@@ -20,6 +20,7 @@ package com.yourrents.core.service;
  * #L%
  */
 
+import com.yourrents.core.EnvironmentTest;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.test.TestConfig;
 import org.jooq.DSLContext;
@@ -33,6 +34,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 import static com.yourrents.data.jooq.Tables.PROPERTY;
@@ -66,11 +69,28 @@ class PropertyServiceTest {
         //then
         result = dsl.select().from(PROPERTY).fetch();
         assertThat(result).hasSize(1);
+    }
 
+    @Test
+    void update() throws IOException {
+        //given
+        InputStream is = EnvironmentTest.class.getClassLoader().getResourceAsStream("com/yourrents/core/testdata/property.json");
+        dsl.loadInto(PROPERTY).loadJSON(is, StandardCharsets.UTF_8).fieldsCorresponding().execute();
+
+        //when
+        int update = propertyService.update(Property.builder()
+                .id(1)
+                .name("flat-A")
+                .description("short description")
+                .build());
+        //then
+        assertThat(update).isEqualTo(1);
     }
 
     @BeforeEach
     public void initTestClass() throws SQLException, IOException {
         dsl.deleteFrom(PROPERTY).execute();
     }
+
+
 }

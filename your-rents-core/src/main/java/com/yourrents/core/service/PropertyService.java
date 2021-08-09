@@ -68,6 +68,15 @@ public class PropertyService {
                 .execute();
     }
 
+    @Transactional
+    public int update(Property property) {
+        return dsl.update(PROPERTY)
+                .set(PROPERTY.NAME, property.getName())
+                .set(PROPERTY.DESCRIPTION, property.getDescription())
+                .where(PROPERTY.ID.eq(property.getId()))
+                .execute();
+    }
+
     @SuppressWarnings("rawtypes")
     private Collection<SortField<?>> getSortFields(Sort sortSpecification) {
         Collection<SortField<?>> querySortFields = new ArrayList<>();

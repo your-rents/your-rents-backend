@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,6 +53,18 @@ public class PropertyController {
     public ResponseEntity<Integer> add(@RequestBody Property property) {
         int id = propertyService.add(property);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(
+            method = {RequestMethod.POST},
+            produces = "application/json",
+            value = "/{id}"
+    )
+    public ResponseEntity<Integer> update(@RequestBody Property property,
+                                          @PathVariable String id) {
+        property.setId(Integer.valueOf(id));
+        int update = propertyService.update(property);
+        return new ResponseEntity<>(property.getId(), update == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
 }
