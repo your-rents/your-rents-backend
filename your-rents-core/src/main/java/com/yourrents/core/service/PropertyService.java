@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import static com.yourrents.data.jooq.Tables.PROPERTY;
 
@@ -60,12 +61,15 @@ public class PropertyService {
     }
 
     @Transactional
-    public int add(Property property) {
-        //the id of the property is ignored as we are going to create a new record in the db
+    public UUID add(Property property) {
+
         return dsl.insertInto(PROPERTY,
                 PROPERTY.NAME, PROPERTY.DESCRIPTION)
                 .values(property.getName(), property.getDescription())
-                .execute();
+                .returningResult(PROPERTY.EXTERNAL_ID)
+                .fetchOne()
+                .component1();
+
     }
 
     @Transactional
@@ -73,7 +77,7 @@ public class PropertyService {
         return dsl.update(PROPERTY)
                 .set(PROPERTY.NAME, property.getName())
                 .set(PROPERTY.DESCRIPTION, property.getDescription())
-                .where(PROPERTY.ID.eq(property.getId()))
+                .where(PROPERTY.EXTERNAL_ID.eq(property.getExternal_id()))
                 .execute();
     }
 
@@ -97,7 +101,7 @@ public class PropertyService {
 
     @SuppressWarnings("rawtypes")
     private TableField getTableField(String sortFieldName) {
-        TableField sortField = null;
+        TableField sortField;
         try {
             Field tableField = PROPERTY.getClass().getField(sortFieldName);
             sortField = (TableField) tableField.get(PROPERTY);
@@ -128,7 +132,7 @@ public class PropertyService {
 
     private Property convertQueryResultToModelObject(PropertyRecord queryResult) {
         return Property.builder()
-                .id(queryResult.getId())
+                .external_id(queryResult.getExternalId())
                 .name(queryResult.getName())
                 .description(queryResult.getDescription())
                 .build();

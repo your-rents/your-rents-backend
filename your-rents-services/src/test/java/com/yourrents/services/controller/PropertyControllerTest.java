@@ -38,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,6 +56,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {PropertyController.class, SecurityConfig.class})
 class PropertyControllerTest {
+
+    private static final UUID uUID_1 = UUID.randomUUID();
+    private static final UUID uUID_2 = UUID.randomUUID();
 
     public static final String URL = "/v1/property";
 
@@ -80,10 +84,10 @@ class PropertyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.content", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].id").value("1"))
+                .andExpect(jsonPath("$.content[0].external_id").value(uUID_1.toString()))
                 .andExpect(jsonPath("$.content[0].name").value("flat-A"))
                 .andExpect(jsonPath("$.content[0].description").value("flat at Jesolo"))
-                .andExpect(jsonPath("$.content[1].id").value("2"))
+                .andExpect(jsonPath("$.content[1].external_id").value(uUID_2.toString()))
                 .andExpect(jsonPath("$.content[1].name").value("flat-B"))
                 .andExpect(jsonPath("$.content[1].description").value("flat at Livorno"));
         verify(propertyService, times(1)).list(any(Pageable.class));
@@ -103,9 +107,10 @@ class PropertyControllerTest {
                 .name("new-name")
                 .description("new-description")
                 .build();
+        when(propertyService.add(property)).thenReturn(uUID_1);
 
         //when-then
-        this.mockMvc.perform(put(URL)
+        this.mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(property)))
                 .andExpect(status().isCreated());
@@ -117,12 +122,12 @@ class PropertyControllerTest {
     void update() throws Exception {
         //given
         Property property = Property.builder()
-                .id(1)
+                .external_id(uUID_1)
                 .build();
         when(propertyService.update(property)).thenReturn(1);
 
         //when-then
-        this.mockMvc.perform(post(URL + "/1")
+        this.mockMvc.perform(put(URL + "/" + uUID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(property)))
                 .andExpect(status().isOk());
@@ -134,12 +139,12 @@ class PropertyControllerTest {
     void updateNotFound() throws Exception {
         //given
         Property property = Property.builder()
-                .id(1)
+                .external_id(uUID_1)
                 .build();
         when(propertyService.update(property)).thenReturn(0);
 
         //when-then
-        this.mockMvc.perform(post(URL + "/1")
+        this.mockMvc.perform(put(URL + "/" + uUID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(property)))
                 .andExpect(status().isNotFound());
@@ -149,12 +154,12 @@ class PropertyControllerTest {
 
     private List<Property> buildList() {
         return List.of(Property.builder()
-                        .id(1)
+                        .external_id(uUID_1)
                         .name("flat-A")
                         .description("flat at Jesolo")
                         .build(),
                 Property.builder()
-                        .id(2)
+                        .external_id(uUID_2)
                         .name("flat-B")
                         .description("flat at Livorno")
                         .build());

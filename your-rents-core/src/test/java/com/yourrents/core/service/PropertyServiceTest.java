@@ -36,7 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
+import java.util.UUID;
 
 import static com.yourrents.data.jooq.Tables.PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +61,6 @@ class PropertyServiceTest {
 
         //when
         propertyService.add(Property.builder()
-                .id(1)
                 .name("flat-A")
                 .description("short description")
                 .build());
@@ -79,7 +78,7 @@ class PropertyServiceTest {
 
         //when
         int update = propertyService.update(Property.builder()
-                .id(1)
+                .external_id(UUID.fromString("a444c18e-01ad-4aef-9365-6f42752faa62"))
                 .name("flat-A")
                 .description("short description")
                 .build());
@@ -88,7 +87,7 @@ class PropertyServiceTest {
     }
 
     @BeforeEach
-    public void initTestClass() throws SQLException, IOException {
+    public void initTestClass() {
         dsl.deleteFrom(PROPERTY).execute();
     }
 

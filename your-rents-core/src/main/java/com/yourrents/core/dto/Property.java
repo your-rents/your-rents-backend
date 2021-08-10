@@ -28,15 +28,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Builder
 @Getter
 @ToString
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"external_id"})
 public class Property {
-    private Integer id;
+    private UUID external_id;
     private String name;
     private String description;
 }

@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/v1/property")
 @RequiredArgsConstructor
@@ -47,24 +49,24 @@ public class PropertyController {
     }
 
     @RequestMapping(
-            method = {RequestMethod.PUT},
+            method = {RequestMethod.POST},
             produces = "application/json"
     )
-    public ResponseEntity<Integer> add(@RequestBody Property property) {
-        int id = propertyService.add(property);
-        return new ResponseEntity<>(id, HttpStatus.CREATED);
+    public ResponseEntity<String> add(@RequestBody Property property) {
+        UUID uuid = propertyService.add(property);
+        return new ResponseEntity<>(uuid.toString(), HttpStatus.CREATED);
     }
 
     @RequestMapping(
-            method = {RequestMethod.POST},
+            method = {RequestMethod.PUT},
             produces = "application/json",
-            value = "/{id}"
+            value = "/{external_id}"
     )
-    public ResponseEntity<Integer> update(@RequestBody Property property,
-                                          @PathVariable String id) {
-        property.setId(Integer.valueOf(id));
+    public ResponseEntity<String> update(@RequestBody Property property,
+                                         @PathVariable String external_id) {
+        property.setExternal_id(UUID.fromString(external_id));
         int update = propertyService.update(property);
-        return new ResponseEntity<>(property.getId(), update == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(property.getExternal_id().toString(), update == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
 }
