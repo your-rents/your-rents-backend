@@ -62,14 +62,12 @@ public class PropertyService {
 
     @Transactional
     public UUID add(Property property) {
-
         return dsl.insertInto(PROPERTY,
                 PROPERTY.NAME, PROPERTY.DESCRIPTION)
                 .values(property.getName(), property.getDescription())
                 .returningResult(PROPERTY.EXTERNAL_ID)
                 .fetchOne()
                 .component1();
-
     }
 
     @Transactional
