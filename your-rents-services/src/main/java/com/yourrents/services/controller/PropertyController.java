@@ -20,9 +20,11 @@ package com.yourrents.services.controller;
  * #L%
  */
 
+import com.yourrents.core.YRNotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/property")
 @RequiredArgsConstructor
+@Slf4j
 public class PropertyController {
     private final PropertyService propertyService;
 
@@ -46,6 +49,22 @@ public class PropertyController {
     )
     public ResponseEntity<Page<Property>> list(Pageable pageable) {
         return ResponseEntity.ok(propertyService.list(pageable));
+    }
+
+    @RequestMapping(
+            method = {RequestMethod.GET},
+            produces = "application/json",
+            value = "/{external_id}"
+    )
+    public ResponseEntity<Property> get(@PathVariable String external_id) {
+        Property property;
+        try {
+            property = propertyService.get(UUID.fromString(external_id));
+        } catch (YRNotFoundException e) {
+            log.warn(e.toString(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(property, HttpStatus.OK);
     }
 
     @RequestMapping(

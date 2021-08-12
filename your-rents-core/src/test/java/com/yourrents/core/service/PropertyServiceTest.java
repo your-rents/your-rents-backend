@@ -21,6 +21,7 @@ package com.yourrents.core.service;
  */
 
 import com.yourrents.core.EnvironmentTest;
+import com.yourrents.core.YRNotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.test.TestConfig;
 import org.jooq.DSLContext;
@@ -40,11 +41,14 @@ import java.util.UUID;
 
 import static com.yourrents.data.jooq.Tables.PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
 class PropertyServiceTest {
+    private static final UUID EXISTING_UUID = UUID.fromString("a444c18e-01ad-4aef-9365-6f42752faa62");
+    private static final UUID NOT_EXISTING_UUID = UUID.fromString("e5c1ec0b-95d4-4e9f-b5d1-12c55812dbe7");
 
     @Autowired
     private DSLContext dsl;
@@ -52,6 +56,10 @@ class PropertyServiceTest {
     @Autowired
     private PropertyService propertyService;
 
+    @BeforeEach
+    public void initTestClass() {
+        dsl.deleteFrom(PROPERTY).execute();
+    }
 
     @Test
     void add() {
@@ -73,12 +81,11 @@ class PropertyServiceTest {
     @Test
     void update() throws IOException {
         //given
-        InputStream is = EnvironmentTest.class.getClassLoader().getResourceAsStream("com/yourrents/core/testdata/property.json");
-        dsl.loadInto(PROPERTY).loadJSON(is, StandardCharsets.UTF_8).fieldsCorresponding().execute();
+        populateDB();
 
         //when
         int update = propertyService.update(Property.builder()
-                .external_id(UUID.fromString("a444c18e-01ad-4aef-9365-6f42752faa62"))
+                .external_id(EXISTING_UUID)
                 .name("flat-A")
                 .description("short description")
                 .build());
@@ -86,10 +93,33 @@ class PropertyServiceTest {
         assertThat(update).isEqualTo(1);
     }
 
-    @BeforeEach
-    public void initTestClass() {
-        dsl.deleteFrom(PROPERTY).execute();
+    @Test
+    void get() throws IOException {
+        //given
+        populateDB();
+
+        //when
+        Property property = propertyService.get(EXISTING_UUID);
+        //then
+        assertThat(property).isNotNull();
+        assertThat(property.getName()).isEqualTo("First property");
+        assertThat(property.getDescription()).isEqualTo("The first property added to the database");
+        assertThat(property.getExternal_id()).isEqualTo(EXISTING_UUID);
     }
 
+    @Test
+    void get_notFound() throws IOException {
+        //given
+        populateDB();
 
+        //when-then
+        assertThatExceptionOfType(YRNotFoundException.class)
+                .isThrownBy(() -> propertyService.get(NOT_EXISTING_UUID)
+                ).withMessageContaining(NOT_EXISTING_UUID.toString());
+    }
+
+    private void populateDB() throws IOException {
+        InputStream is = EnvironmentTest.class.getClassLoader().getResourceAsStream("com/yourrents/core/testdata/property.json");
+        dsl.loadInto(PROPERTY).loadJSON(is, StandardCharsets.UTF_8).fieldsCorresponding().execute();
+    }
 }

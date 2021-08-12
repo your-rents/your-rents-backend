@@ -21,6 +21,7 @@ package com.yourrents.services.controller;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yourrents.core.YRNotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import com.yourrents.services.security.SecurityConfig;
@@ -94,10 +95,31 @@ class PropertyControllerTest {
     }
 
     @Test
-    void listNotAuthorized() throws Exception {
-        mockMvc.perform(get(URL))
-                .andExpect(status().isUnauthorized());
+    @WithMockUser(authorities = "ROLE_USER")
+    void getProperty() throws Exception {
+
+        //given
+        when(propertyService.get(uUID_1)).thenReturn(buildList().get(0));
+        //when-then
+        this.mockMvc.perform(get(URL + "/" + uUID_1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(propertyService, times(1)).get(uUID_1);
     }
+
+    @Test
+    @WithMockUser(authorities = "ROLE_USER")
+    void getProperty_404() throws Exception {
+
+        //given
+        when(propertyService.get(uUID_1)).thenThrow(YRNotFoundException.class);
+        //when-then
+        this.mockMvc.perform(get(URL + "/" + uUID_1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        verify(propertyService, times(1)).get(uUID_1);
+    }
+
 
     @Test
     @WithMockUser(authorities = "ROLE_USER")
@@ -164,4 +186,5 @@ class PropertyControllerTest {
                         .description("flat at Livorno")
                         .build());
     }
+
 }
