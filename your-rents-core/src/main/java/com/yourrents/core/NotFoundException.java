@@ -1,8 +1,8 @@
-package com.yourrents.core.dto;
+package com.yourrents.core;
 
 /*-
  * #%L
- * Your Rents Services
+ * Your Rents Core
  * %%
  * Copyright (C) 2019 - 2021 Your Rents Team
  * %%
@@ -20,25 +20,14 @@ package com.yourrents.core.dto;
  * #L%
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+public class NotFoundException extends RuntimeException {
 
-import java.util.UUID;
+    public NotFoundException(String message) {
+        super(message);
+    }
 
-@Builder
-@Getter
-@ToString
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = {"external_id"})
-public class Property {
-    private UUID external_id;
-    private String name;
-    private String description;
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
