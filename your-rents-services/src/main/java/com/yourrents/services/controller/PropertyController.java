@@ -20,7 +20,7 @@ package com.yourrents.services.controller;
  * #L%
  */
 
-import com.yourrents.core.YRNotFoundException;
+import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +60,7 @@ public class PropertyController {
         Property property;
         try {
             property = propertyService.get(UUID.fromString(external_id));
-        } catch (YRNotFoundException e) {
+        } catch (NotFoundException e) {
             log.warn(e.toString(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

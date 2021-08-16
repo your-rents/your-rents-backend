@@ -21,7 +21,7 @@ package com.yourrents.services.controller;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yourrents.core.YRNotFoundException;
+import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import com.yourrents.services.security.SecurityConfig;
@@ -112,7 +112,7 @@ class PropertyControllerTest {
     void getProperty_404() throws Exception {
 
         //given
-        when(propertyService.get(uUID_1)).thenThrow(YRNotFoundException.class);
+        when(propertyService.get(uUID_1)).thenThrow(NotFoundException.class);
         //when-then
         this.mockMvc.perform(get(URL + "/" + uUID_1)
                 .contentType(MediaType.APPLICATION_JSON))

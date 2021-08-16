@@ -21,7 +21,7 @@ package com.yourrents.core.service;
  */
 
 import com.yourrents.core.EnvironmentTest;
-import com.yourrents.core.YRNotFoundException;
+import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.test.TestConfig;
 import org.jooq.DSLContext;
@@ -113,7 +113,7 @@ class PropertyServiceTest {
         populateDB();
 
         //when-then
-        assertThatExceptionOfType(YRNotFoundException.class)
+        assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> propertyService.get(NOT_EXISTING_UUID)
                 ).withMessageContaining(NOT_EXISTING_UUID.toString());
     }

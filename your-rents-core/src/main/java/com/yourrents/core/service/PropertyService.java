@@ -20,7 +20,7 @@ package com.yourrents.core.service;
  * #L%
  */
 
-import com.yourrents.core.YRNotFoundException;
+import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.data.jooq.tables.records.PropertyRecord;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +77,7 @@ public class PropertyService {
                 .where(PROPERTY.EXTERNAL_ID.eq(uuid))
                 .fetchOne();
         if (propertyRecord == null) {
-            throw new YRNotFoundException("No Property found having external_id " + uuid);
+            throw new NotFoundException("No Property found having external_id " + uuid);
         }
         return Property.builder()
                 .external_id(uuid)

@@ -20,23 +20,14 @@ package com.yourrents.core;
  * #L%
  */
 
-public class YRNotFoundException extends RuntimeException {
-    public YRNotFoundException() {
-    }
+public class NotFoundException extends RuntimeException {
 
-    public YRNotFoundException(String message) {
+    public NotFoundException(String message) {
         super(message);
     }
 
-    public YRNotFoundException(String message, Throwable cause) {
+    public NotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public YRNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public YRNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
