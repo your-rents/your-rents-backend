@@ -20,12 +20,9 @@ package com.yourrents.services;
  * #L%
  */
 
-import javax.sql.DataSource;
-
 import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -39,12 +36,13 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
+import javax.sql.DataSource;
+
 @Configuration
 public class JooqConfig {
 
     @Autowired
     private Environment env;
-    
     @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         HikariConfig hikariConfig = new HikariConfig();

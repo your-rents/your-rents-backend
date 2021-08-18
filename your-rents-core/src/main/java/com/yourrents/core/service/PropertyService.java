@@ -20,15 +20,13 @@ package com.yourrents.core.service;
  * #L%
  */
 
-import static com.yourrents.data.jooq.Tables.PROPERTY;
-
+import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.data.jooq.tables.records.PropertyRecord;
-
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SortField;
 import org.jooq.TableField;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,21 +40,60 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
+import static com.yourrents.data.jooq.Tables.PROPERTY;
 
 @Service
+@RequiredArgsConstructor
 public class PropertyService {
-    @Autowired
-    private DSLContext dsl;
+
+    private final DSLContext dsl;
 
     @Transactional(readOnly = true)
     public Page<Property> list(Pageable pageable) {
         List<PropertyRecord> queryResults = dsl.selectFrom(PROPERTY)
-            .orderBy(getSortFields(pageable.getSort()))
-            .limit(pageable.getPageSize()).offset(pageable.getOffset())
-            .fetchInto(PropertyRecord.class);
+                .orderBy(getSortFields(pageable.getSort()))
+                .limit(pageable.getPageSize()).offset(pageable.getOffset())
+                .fetchInto(PropertyRecord.class);
         List<Property> propertyEntries = convertQueryResultsToModelObjects(queryResults);
         long totalCount = dsl.fetchCount(PROPERTY);
         return new PageImpl<>(propertyEntries, pageable, totalCount);
+    }
+
+    @Transactional
+    public UUID add(Property property) {
+        return dsl.insertInto(PROPERTY,
+                PROPERTY.NAME, PROPERTY.DESCRIPTION)
+                .values(property.getName(), property.getDescription())
+                .returningResult(PROPERTY.EXTERNAL_ID)
+                .fetchOne()
+                .component1();
+    }
+
+    @Transactional(readOnly = true)
+    public Property get(UUID uuid) {
+        PropertyRecord propertyRecord = dsl.selectFrom(PROPERTY)
+                .where(PROPERTY.EXTERNAL_ID.eq(uuid))
+                .fetchOne();
+        if (propertyRecord == null) {
+            throw new NotFoundException("No Property found having external_id " + uuid);
+        }
+        return Property.builder()
+                .external_id(uuid)
+                .name(propertyRecord.getName())
+                .description(propertyRecord.getDescription())
+                .build();
+
+    }
+
+    @Transactional
+    public int update(Property property) {
+        return dsl.update(PROPERTY)
+                .set(PROPERTY.NAME, property.getName())
+                .set(PROPERTY.DESCRIPTION, property.getDescription())
+                .where(PROPERTY.EXTERNAL_ID.eq(property.getExternal_id()))
+                .execute();
     }
 
     @SuppressWarnings("rawtypes")
@@ -79,12 +116,12 @@ public class PropertyService {
 
     @SuppressWarnings("rawtypes")
     private TableField getTableField(String sortFieldName) {
-        TableField sortField = null;
+        TableField sortField;
         try {
             Field tableField = PROPERTY.getClass().getField(sortFieldName);
             sortField = (TableField) tableField.get(PROPERTY);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            String errorMessage = String.format("Could not find table field: {}", sortFieldName);
+            String errorMessage = String.format("Could not find table field: %s", sortFieldName);
             throw new InvalidDataAccessApiUsageException(errorMessage, ex);
         }
         return sortField;
@@ -109,6 +146,10 @@ public class PropertyService {
     }
 
     private Property convertQueryResultToModelObject(PropertyRecord queryResult) {
-        return Property.builder().name(queryResult.getName()).description(queryResult.getDescription()).build();
+        return Property.builder()
+                .external_id(queryResult.getExternalId())
+                .name(queryResult.getName())
+                .description(queryResult.getDescription())
+                .build();
     }
 }

@@ -1,7 +1,5 @@
 package com.yourrents.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /*-
  * #%L
  * Your Rents Core
@@ -22,18 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * #L%
  */
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static com.yourrents.data.jooq.Tables.PROPERTY;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
-
 import com.yourrents.core.dto.Property;
 import com.yourrents.core.service.PropertyService;
 import com.yourrents.core.test.TestConfig;
-
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -46,8 +35,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
+
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
- *  Some simple tests for checking the module environment. Other tests should mock jooq dependencies.
+ * Some simple tests for checking the module environment. Other tests should mock jooq dependencies.
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)

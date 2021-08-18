@@ -19,11 +19,8 @@ package com.yourrents.core.test;
  * #L%
  */
 
-import javax.sql.DataSource;
-
 import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
 import com.yourrents.data.util.TestUtils;
-
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -37,13 +34,15 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
+
 /**
  * Test configuration for using JOOQ in Spring.
- * 
+ *
  * @see <a href=
- *      "https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/">https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/</a>
+ * "https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/">https://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/</a>
  * @see <a href=
- *      "https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/">https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/</a>
+ * "https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/">https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/</a>
  */
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.yourrents.core.service")
