@@ -23,6 +23,7 @@ package com.yourrents.core.service;
 import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
 import com.yourrents.data.jooq.tables.records.PropertyRecord;
+import com.yourrents.data.jooq.daos.PropertyDao;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SortField;
@@ -48,52 +49,32 @@ import static com.yourrents.data.jooq.Tables.PROPERTY;
 @RequiredArgsConstructor
 public class PropertyService {
 
-    private final DSLContext dsl;
+    private final PropertyDao propertyDao;
 
     @Transactional(readOnly = true)
     public Page<Property> list(Pageable pageable) {
-        List<PropertyRecord> queryResults = dsl.selectFrom(PROPERTY)
-                .orderBy(getSortFields(pageable.getSort()))
-                .limit(pageable.getPageSize()).offset(pageable.getOffset())
-                .fetchInto(PropertyRecord.class);
+        List<PropertyRecord> queryResults = propertyDao.findAll(pageable.getPageSize(), pageable.getOffset(),
+                getSortFields(pageable.getSort()));
         List<Property> propertyEntries = convertQueryResultsToModelObjects(queryResults);
-        long totalCount = dsl.fetchCount(PROPERTY);
+        long totalCount = propertyDao.countAll();
         return new PageImpl<>(propertyEntries, pageable, totalCount);
     }
 
     @Transactional
     public UUID add(Property property) {
-        return dsl.insertInto(PROPERTY,
-                PROPERTY.NAME, PROPERTY.DESCRIPTION)
-                .values(property.getName(), property.getDescription())
-                .returningResult(PROPERTY.EXTERNAL_ID)
-                .fetchOne()
-                .component1();
+        return propertyDao.insert(property.getName(), property.getDescription());
     }
 
     @Transactional(readOnly = true)
     public Property get(UUID uuid) {
-        PropertyRecord propertyRecord = dsl.selectFrom(PROPERTY)
-                .where(PROPERTY.EXTERNAL_ID.eq(uuid))
-                .fetchOne();
-        if (propertyRecord == null) {
-            throw new NotFoundException("No Property found having external_id " + uuid);
-        }
-        return Property.builder()
-                .external_id(uuid)
-                .name(propertyRecord.getName())
-                .description(propertyRecord.getDescription())
-                .build();
-
+        return propertyDao.findByExternalId(uuid)
+                .map((propertyRecord) -> convertQueryResultToModelObject(propertyRecord))
+                .orElseThrow(() -> new NotFoundException("No Property found having external_id " + uuid));
     }
 
     @Transactional
     public int update(Property property) {
-        return dsl.update(PROPERTY)
-                .set(PROPERTY.NAME, property.getName())
-                .set(PROPERTY.DESCRIPTION, property.getDescription())
-                .where(PROPERTY.EXTERNAL_ID.eq(property.getExternal_id()))
-                .execute();
+        return propertyDao.updateByExternalId(property.getExternal_id(), property.getName(), property.getDescription());
     }
 
     @SuppressWarnings("rawtypes")
@@ -146,10 +127,7 @@ public class PropertyService {
     }
 
     private Property convertQueryResultToModelObject(PropertyRecord queryResult) {
-        return Property.builder()
-                .external_id(queryResult.getExternalId())
-                .name(queryResult.getName())
-                .description(queryResult.getDescription())
-                .build();
+        return Property.builder().external_id(queryResult.getExternalId()).name(queryResult.getName())
+                .description(queryResult.getDescription()).build();
     }
 }

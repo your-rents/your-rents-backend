@@ -20,6 +20,7 @@ package com.yourrents.core.test;
  */
 
 import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
+import com.yourrents.data.jooq.daos.PropertyDao;
 import com.yourrents.data.util.TestUtils;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
@@ -95,4 +96,8 @@ public class TestConfig {
         return new DefaultDSLContext(configuration());
     }
 
+    @Bean
+    public PropertyDao propertyDao() {
+        return new PropertyDao(dsl());
+    }
 }
