@@ -1,5 +1,19 @@
 package com.yourrents.data.jooq.daos;
 
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
+
+import com.yourrents.data.jooq.tables.records.PropertyRecord;
+import com.yourrents.data.util.TestUtils;
+import com.zaxxer.hikari.HikariDataSource;
+
 /*-
  * #%L
  * Your Rents Core
@@ -21,29 +35,13 @@ package com.yourrents.data.jooq.daos;
  */
 
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.zaxxer.hikari.HikariDataSource;
-import com.yourrents.data.jooq.tables.records.PropertyRecord;
-import com.yourrents.data.util.TestUtils;
-
-import static com.yourrents.data.jooq.Tables.PROPERTY;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PropertyDaoTest {
     private static final UUID EXISTING_UUID = UUID.fromString("a444c18e-01ad-4aef-9365-6f42752faa62");

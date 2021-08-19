@@ -1,5 +1,14 @@
 package com.yourrents.core.service;
 
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
 /*-
  * #%L
  * Your Rents Services
@@ -22,10 +31,9 @@ package com.yourrents.core.service;
 
 import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
-import com.yourrents.data.jooq.tables.records.PropertyRecord;
 import com.yourrents.data.jooq.daos.PropertyDao;
-import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
+import com.yourrents.data.jooq.tables.records.PropertyRecord;
+
 import org.jooq.SortField;
 import org.jooq.TableField;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -36,14 +44,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-
-import static com.yourrents.data.jooq.Tables.PROPERTY;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
