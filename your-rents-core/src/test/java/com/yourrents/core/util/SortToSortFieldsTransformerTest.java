@@ -1,0 +1,96 @@
+package com.yourrents.core.util;
+
+/*-
+ * #%L
+ * Your Rents Core
+ * %%
+ * Copyright (C) 2019 - 2021 Your Rents Team
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Collection;
+import java.util.Iterator;
+
+import com.yourrents.core.test.TestConfig;
+
+import org.jooq.SortField;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
+public class SortToSortFieldsTransformerTest {
+    
+    @Autowired
+    private SortToSortFieldsTransformer transformer;
+
+    @Test
+    public void testNullSort() {
+        Collection<SortField<?>> result = transformer.transform(null);
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @Test
+    public void testUnsorted() {
+        Collection<SortField<?>> result = transformer.transform(Sort.unsorted());
+        assertThat(result).isNotNull().isEmpty();
+    }
+
+    @Test
+    public void testSingleField() {
+        Sort sort = Sort.by("PROPERTY.NAME");
+        Collection<SortField<?>> result = transformer.transform(sort);
+        assertThat(result).isNotEmpty();
+        SortField<?> first = result.iterator().next();
+        assertThat(first.getName()).isEqualTo("name");
+        assertThat(first.getOrder().toSQL()).isEqualTo("asc");
+        assertThat(first.toString()).isEqualTo("\"public\".\"property\".\"name\" asc");
+    }
+
+    @Test
+    public void testSingleFieldDesc() {
+        Sort sort = Sort.by(Order.desc("PROPERTY.NAME"));
+        Collection<SortField<?>> result = transformer.transform(sort);
+        assertThat(result).isNotEmpty();
+        SortField<?> first = result.iterator().next();
+        assertThat(first.getName()).isEqualTo("name");
+        assertThat(first.getOrder().toSQL()).isEqualTo("desc");
+        assertThat(first.toString()).isEqualTo("\"public\".\"property\".\"name\" desc");
+    }
+
+    @Test
+    public void testMultipleFields() {
+        Sort sort = Sort.by(Order.by("PROPERTY.NAME"), Order.desc("PROPERTY.DESCRIPTION"));
+        Collection<SortField<?>> result = transformer.transform(sort);
+        assertThat(result).isNotEmpty();
+        Iterator<SortField<?>> it = result.iterator();
+        SortField<?> first = it.next();
+        assertThat(first.getName()).isEqualTo("name");
+        assertThat(first.getOrder().toSQL()).isEqualTo("asc");
+        assertThat(first.toString()).isEqualTo("\"public\".\"property\".\"name\" asc");
+        SortField<?> second = it.next();
+        assertThat(second.getName()).isEqualTo("description");
+        assertThat(second.getOrder().toSQL()).isEqualTo("desc");
+        assertThat(second.toString()).isEqualTo("\"public\".\"property\".\"description\" desc");
+    }
+
+}
