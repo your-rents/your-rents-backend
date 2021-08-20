@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import com.yourrents.core.NotFoundException;
 import com.yourrents.core.dto.Property;
+import com.yourrents.core.dto.PropertyConverter;
 import com.yourrents.data.jooq.daos.PropertyDao;
 import com.yourrents.data.jooq.tables.records.PropertyRecord;
 
@@ -51,12 +52,13 @@ import lombok.RequiredArgsConstructor;
 public class PropertyService {
 
     private final PropertyDao propertyDao;
+    private final PropertyConverter propertyConverter;
 
     @Transactional(readOnly = true)
     public Page<Property> list(Pageable pageable) {
         List<PropertyRecord> queryResults = propertyDao.findAll(pageable.getPageSize(), pageable.getOffset(),
                 getSortFields(pageable.getSort()));
-        List<Property> propertyEntries = convertQueryResultsToModelObjects(queryResults);
+        List<Property> propertyEntries = propertyConverter.convert(queryResults);
         long totalCount = propertyDao.countAll();
         return new PageImpl<>(propertyEntries, pageable, totalCount);
     }
@@ -69,7 +71,7 @@ public class PropertyService {
     @Transactional(readOnly = true)
     public Property get(UUID uuid) {
         return propertyDao.findByExternalId(uuid)
-                .map((propertyRecord) -> convertQueryResultToModelObject(propertyRecord))
+                .map((propertyRecord) -> propertyConverter.convert(propertyRecord))
                 .orElseThrow(() -> new NotFoundException("No Property found having external_id " + uuid));
     }
 
@@ -118,17 +120,4 @@ public class PropertyService {
         }
     }
 
-    private List<Property> convertQueryResultsToModelObjects(List<PropertyRecord> queryResults) {
-        List<Property> propertyEntries = new ArrayList<>();
-        for (PropertyRecord queryResult : queryResults) {
-            Property propertyEntry = convertQueryResultToModelObject(queryResult);
-            propertyEntries.add(propertyEntry);
-        }
-        return propertyEntries;
-    }
-
-    private Property convertQueryResultToModelObject(PropertyRecord queryResult) {
-        return Property.builder().external_id(queryResult.getExternalId()).name(queryResult.getName())
-                .description(queryResult.getDescription()).build();
-    }
 }

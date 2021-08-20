@@ -48,7 +48,7 @@ import javax.sql.DataSource;
  * "https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/">https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/</a>
  */
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.yourrents.core.service")
+@ComponentScan(basePackages = {"com.yourrents.core", "com.yourrents.core.dto"})
 @Configuration
 public class TestConfig {
 
