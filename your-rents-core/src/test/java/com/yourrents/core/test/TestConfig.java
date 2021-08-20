@@ -27,9 +27,11 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -97,7 +99,8 @@ public class TestConfig {
     }
 
     @Bean
-    public PropertyDao propertyDao() {
-        return new PropertyDao(dsl());
+    @Primary
+    public PropertyDao mockPropertyDao() {
+        return Mockito.mock(PropertyDao.class);
     }
 }

@@ -20,9 +20,17 @@ package com.yourrents.core;
  * #L%
  */
 
-import com.yourrents.core.dto.Property;
-import com.yourrents.core.service.PropertyService;
+import static com.yourrents.data.jooq.Tables.PROPERTY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
+
 import com.yourrents.core.test.TestConfig;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -30,19 +38,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.sql.SQLException;
-
-import static com.yourrents.data.jooq.Tables.PROPERTY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Some simple tests for checking the module environment. Other tests should mock jooq dependencies.
@@ -53,9 +50,6 @@ public class EnvironmentTest {
 
     @Autowired
     private DSLContext dsl;
-
-    @Autowired
-    private PropertyService propertyService;
 
     @BeforeEach
     public void initTestClass() throws SQLException, IOException {
@@ -73,12 +67,6 @@ public class EnvironmentTest {
     public void testFindAllProperties() throws SQLException {
         Result<Record> result = dsl.select().from(PROPERTY).fetch();
         assertEquals(2, result.size());
-    }
-
-    @Test
-    public void testFindAllPropertiesWithService() throws SQLException {
-        Page<Property> result = propertyService.list(Pageable.ofSize(100));
-        assertEquals(2, result.getNumberOfElements());
     }
     
 }
