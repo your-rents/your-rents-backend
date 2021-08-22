@@ -6,9 +6,9 @@
         <artifactId>your-rents-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>your-rents-services</artifactId>
+    <artifactId>your-rents-api</artifactId>
     <packaging>jar</packaging>
-    <name>Your Rents Services</name>
+    <name>Your Rents REST API</name>
     <description>REST services for the Your Rents system</description>
 
     <properties>
