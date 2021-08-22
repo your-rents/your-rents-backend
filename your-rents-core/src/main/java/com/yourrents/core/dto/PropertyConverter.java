@@ -1,10 +1,10 @@
-package com.yourrents.services;
+package com.yourrents.core.dto;
 
 /*-
  * #%L
- * Your Rents Services
+ * Your Rents Core
  * %%
- * Copyright (C) 2019 Your Rents Team
+ * Copyright (C) 2019 - 2021 Your Rents Team
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,20 @@ package com.yourrents.services;
  * #L%
  */
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
+import com.yourrents.data.jooq.tables.records.PropertyRecord;
 
-@SpringBootApplication(scanBasePackages = { "com.yourrents.services", "com.yourrents.core" },
- 					   exclude = {R2dbcAutoConfiguration.class })
-public class YourrentsServicesApplication {
+import org.springframework.stereotype.Component;
 
-	public static void main(String[] args) {
-		SpringApplication.run(YourrentsServicesApplication.class, args);
-	}
+@Component
+public class PropertyConverter implements Converter<PropertyRecord, Property> {
 
+    @Override
+    public Property apply(PropertyRecord record) {
+        return Property.builder()
+            .external_id(record.getExternalId())
+            .name(record.getName())
+            .description(record.getDescription())
+            .build();
+    }
+    
 }

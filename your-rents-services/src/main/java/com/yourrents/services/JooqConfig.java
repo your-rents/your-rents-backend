@@ -21,8 +21,11 @@ package com.yourrents.services;
  */
 
 import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
+import com.yourrents.data.jooq.daos.PropertyDao;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -43,7 +46,6 @@ public class JooqConfig {
 
     @Autowired
     private Environment env;
-
     @Bean(destroyMethod = "close")
     public DataSource dataSource() {
         HikariConfig hikariConfig = new HikariConfig();
@@ -91,8 +93,12 @@ public class JooqConfig {
     }
 
     @Bean
-    public DefaultDSLContext dsl(DefaultConfiguration configuration) {
+    public DSLContext dsl(DefaultConfiguration configuration) {
         return new DefaultDSLContext(configuration);
     }
 
+    @Bean
+    public PropertyDao propertyDao(DSLContext dsl) {
+        return new PropertyDao(dsl);
+    }
 }

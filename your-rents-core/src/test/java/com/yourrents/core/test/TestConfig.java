@@ -20,15 +20,18 @@ package com.yourrents.core.test;
  */
 
 import com.yourrents.core.util.JOOQToSpringExceptionTransformer;
+import com.yourrents.data.jooq.daos.PropertyDao;
 import com.yourrents.data.util.TestUtils;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -45,7 +48,7 @@ import javax.sql.DataSource;
  * "https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/">https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-with-spring/</a>
  */
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.yourrents.core.service")
+@ComponentScan(basePackages = {"com.yourrents.core", "com.yourrents.core.dto"})
 @Configuration
 public class TestConfig {
 
@@ -95,4 +98,9 @@ public class TestConfig {
         return new DefaultDSLContext(configuration());
     }
 
+    @Bean
+    @Primary
+    public PropertyDao mockPropertyDao() {
+        return Mockito.mock(PropertyDao.class);
+    }
 }
