@@ -217,7 +217,7 @@
         <module>your-rents-data</module>
         <module>your-rents-data-jooq</module>
         <module>your-rents-core</module>
-        <module>your-rents-services</module>
+        <module>your-rents-api</module>
     </modules>
 
     <repositories>
