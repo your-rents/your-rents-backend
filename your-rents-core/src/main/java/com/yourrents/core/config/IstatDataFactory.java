@@ -39,7 +39,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class BeansFactory {
+public class IstatDataFactory {
 
     private static final String PATH = "istat/Elenco-comuni-italiani.csv";
     private final Mapper mapper;
@@ -50,7 +50,7 @@ public class BeansFactory {
         InputStream is = getClass().getClassLoader().getResourceAsStream(PATH);
         Reader reader = new InputStreamReader(is);
         List<Municipality> records = new LinkedList<>();
-        try (BufferedReader br = new BufferedReader(reader);) {
+        try (BufferedReader br = new BufferedReader(reader)) {
             String line;
             while ((line = br.readLine()) != null) {
                 Municipality municipality = mapper.stringToMunicipality(line);

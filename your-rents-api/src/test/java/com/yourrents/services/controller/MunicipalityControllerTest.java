@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {MunicipalityController.class})
 class MunicipalityControllerTest {
-    public static final String URL = "/v1/municipality";
+    public static final String URL = "/v1/istat/municipality";
 
     @Resource
     private MockMvc mockMvc;
@@ -115,7 +115,7 @@ class MunicipalityControllerTest {
         verify(municipalityService).findByCode("xxx");
     }
 
-    public static List<Municipality> buildList() {
+    private static List<Municipality> buildList() {
         return List.of(Municipality.builder()
                         .code("1")
                         .name("Spinea")

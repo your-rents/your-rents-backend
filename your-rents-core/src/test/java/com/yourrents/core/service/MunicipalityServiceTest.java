@@ -20,25 +20,32 @@ package com.yourrents.core.service;
  * #L%
  */
 
+import com.yourrents.core.config.IstatDataFactory;
 import com.yourrents.core.dto.Municipality;
+import com.yourrents.core.test.TestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
 class MunicipalityServiceTest {
+
+    @Autowired
     private MunicipalityService municipalityService;
 
-    @BeforeEach
-    void setUp() {
-        this.municipalityService = new MunicipalityService(buildList());
-    }
 
     @Test
     void findAll() {
@@ -52,7 +59,7 @@ class MunicipalityServiceTest {
     @Test
     void findByCode() {
         //when
-        Municipality spinea = municipalityService.findByCode("1");
+        Municipality spinea = municipalityService.findByCode("027038");
         //then
         assertThat(spinea).isNotNull();
         assertThat(spinea.getName()).isEqualTo("Spinea");
@@ -62,22 +69,6 @@ class MunicipalityServiceTest {
     void findByCode_NotFound() {
         assertThatThrownBy(() -> municipalityService.findByCode("xxx")).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("xxx");
-    }
-
-    public static List<Municipality> buildList() {
-        return List.of(Municipality.builder()
-                        .code("1")
-                        .name("Spinea")
-                        .province("Venezia")
-                        .region("Veneto")
-                        .build(),
-                Municipality.builder()
-                        .code("2")
-                        .name("San Bonifacio")
-                        .province("Verona")
-                        .region("Veneto")
-                        .build()
-        );
     }
 
 }

@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class MunicipalityService {
+
     private final List<Municipality> municipalities;
 
     public Municipality findByCode(String code) {

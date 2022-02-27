@@ -35,14 +35,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/municipality")
+@RequestMapping("/v1/istat/municipality")
 @RequiredArgsConstructor
 @Slf4j
 public class MunicipalityController {
 
-
     private final MunicipalityService municipalityService;
-
 
     @RequestMapping(
             method = {RequestMethod.GET},
