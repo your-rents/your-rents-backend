@@ -16,10 +16,10 @@ The Java back-end services for the Your Rent system.
 `$ mvn clean install`
 
 ## To start the app
-
-`$ cd your-rents-services`
-
-`$ mvn spring-boot:run`
+```bash
+$ cd your-rents-api
+$ mvn spring-boot:run
+```
 
 ## Swagger
 
