@@ -12,11 +12,12 @@ The Java back-end services for the Your Rent system.
 - docker-compose (<https://docs.docker.com/compose/install/>)
 
 ## To build
-
-`$ mvn clean install`
+```shell
+$ mvn clean install
+```
 
 ## To start the app
-```bash
+```shell
 $ cd your-rents-api
 $ mvn spring-boot:run
 ```
