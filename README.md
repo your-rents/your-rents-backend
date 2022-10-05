@@ -35,13 +35,13 @@ In the development environment you should use the provided Docker containers.
 From the `your-rents-backend` directory, type the following command:
 
 ```console
-docker-compose -f "docker-compose-services.yml" up -d --build
+docker compose -f "docker-compose-services.yml" up -d --build
 ```
 
 For stopping it, type the following command:
 
 ```console
-docker-compose -f "docker-compose-services.yml" down
+docker compose -f "docker-compose-services.yml" down
 ```
 
 ### Initialize the database schema
