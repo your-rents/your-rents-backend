@@ -20,18 +20,7 @@ package com.yourrents.services;
  * #L%
  */
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.function.Predicate;
-
-import static springfox.documentation.builders.PathSelectors.regex;
 
 
 /**
@@ -40,28 +29,6 @@ import static springfox.documentation.builders.PathSelectors.regex;
  * @author <a href="mailto:lucio.benfante@gmail.com">Lucio Benfante</a>
  */
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
 
-    @Bean
-    public Docket postsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
-                .apiInfo(apiInfo()).select().paths(postPaths()).build();
-    }
-
-    private Predicate<String> postPaths() {
-        return regex("/v1.*");
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("Your Rents API")
-                .description("Your Rents API reference for developers")
-                .termsOfServiceUrl("http://api.yourrents.com/tos")
-                .contact(new Contact("Your Rents development support",
-                        "https://github.com/your-rents/your-rents-backend/issues",
-                        "lucio.benfante@gmail.com"))
-                .license("Apache 2.0")
-                .licenseUrl("https://github.com/your-rents/your-rents-backend/blob/develop/LICENSE")
-                .version("1.0").build();
-    }
 }

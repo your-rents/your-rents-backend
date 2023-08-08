@@ -20,23 +20,6 @@ package com.yourrents.services.controller;
  * #L%
  */
 
-import com.yourrents.core.dto.Municipality;
-import com.yourrents.core.service.MunicipalityService;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-
-import javax.annotation.Resource;
-
-import java.util.List;
-
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -46,20 +29,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.yourrents.core.dto.Municipality;
+import com.yourrents.core.service.MunicipalityService;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+
 @WebMvcTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {MunicipalityController.class})
 class MunicipalityControllerTest {
     public static final String URL = "/v1/istat/municipality";
 
-    @Resource
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private MunicipalityService municipalityService;
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void list() throws Exception {
         //given
         PageImpl<Municipality> page = new PageImpl<>(buildList());
@@ -84,7 +79,6 @@ class MunicipalityControllerTest {
 
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void findByCode() throws Exception {
         //given
         when(municipalityService.findByCode("1"))
@@ -102,7 +96,6 @@ class MunicipalityControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void findByCode_404() throws Exception {
         //given
         when(municipalityService.findByCode("xxx"))

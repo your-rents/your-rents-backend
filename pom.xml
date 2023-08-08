@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.yourrents</groupId>
     <artifactId>your-rents-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Your Rents Backend Parent</name>
     <description>Parent POM for the Your Rents backend</description>
@@ -16,13 +16,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
-        <spring.boot.version>2.5.3</spring.boot.version>
+        <java.version>19</java.version>
+        <spring.boot.version>3.1.2</spring.boot.version>
         <testcontainers.version>1.16.0</testcontainers.version>
-        <flyway.version>7.11.4</flyway.version>
+        <flyway.version>9.21.1</flyway.version>
         <jooq.version>3.15.1</jooq.version>
         <jdbc.postgresql.version>42.2.23</jdbc.postgresql.version>
         <hikaricp.version>5.0.0</hikaricp.version>
+        <springdoc-openapi.version>2.0.3</springdoc-openapi.version>
     </properties>
 
     <dependencyManagement>
@@ -34,16 +35,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>3.0.0</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.lambico</groupId>
                 <artifactId>lambico-datatest-jpa</artifactId>
