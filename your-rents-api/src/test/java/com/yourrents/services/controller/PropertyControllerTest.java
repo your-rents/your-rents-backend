@@ -20,27 +20,6 @@ package com.yourrents.services.controller;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yourrents.core.NotFoundException;
-import com.yourrents.core.dto.Property;
-import com.yourrents.core.service.PropertyService;
-import com.yourrents.services.security.SecurityConfig;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.UUID;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -53,9 +32,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yourrents.core.NotFoundException;
+import com.yourrents.core.dto.Property;
+import com.yourrents.core.service.PropertyService;
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+
 @WebMvcTest
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {PropertyController.class, SecurityConfig.class})
+@ContextConfiguration(classes = {PropertyController.class})
 class PropertyControllerTest {
 
     private static final UUID uUID_1 = UUID.randomUUID();
@@ -63,7 +59,7 @@ class PropertyControllerTest {
 
     public static final String URL = "/v1/property";
 
-    @Resource
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -74,7 +70,6 @@ class PropertyControllerTest {
 
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void list() throws Exception {
         //given
         when(propertyService.list(any(Pageable.class)))
@@ -95,7 +90,6 @@ class PropertyControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void getProperty() throws Exception {
 
         //given
@@ -108,7 +102,6 @@ class PropertyControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void getProperty_404() throws Exception {
 
         //given
@@ -122,7 +115,6 @@ class PropertyControllerTest {
 
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void add() throws Exception {
         //given
         Property property = Property.builder()
@@ -140,7 +132,6 @@ class PropertyControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void update() throws Exception {
         //given
         Property property = Property.builder()
@@ -157,7 +148,6 @@ class PropertyControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "ROLE_USER")
     void updateNotFound() throws Exception {
         //given
         Property property = Property.builder()
